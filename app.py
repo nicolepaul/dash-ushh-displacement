@@ -27,6 +27,7 @@ n_factors = len(factor_values)
 # Initialize app
 app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
 load_figure_template('FLATLY')
+app.title = "Household displacement in recent US disasters"
 
 # Create controls
 control_damage = html.Div(
