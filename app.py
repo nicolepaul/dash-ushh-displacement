@@ -14,12 +14,12 @@ from util.plot import get_stacked_bar_traces
 # Retrieve data and initial inputs
 data, data_dict = get_data()
 damage_factor, duration_factor = "ND_DAMAGE", "ND_HOWLONG"
-relevant_factors = ['ND_DAMAGE', 'ND_HOWLONG', 'ND_UNSANITARY', 'ND_FDSHRTAGE',
+relevant_factors = ['ND_DAMAGE', 'ND_HOWLONG', 'HAZARD_TYPE', 'ND_UNSANITARY', 'ND_FDSHRTAGE',
                     'ND_WATER', 'ND_ELCTRC', 'DOWN', 'WORRY', 
                     'MOBILITY', 'REMEMBERING', 'SELFCARE', 'UNDERSTAND',
-                    'TENURE', 'LIVQTRRV', 'RENT_BIN', 'EEDUC', 'INCOME',
-                    'ANYWORK', 'SETTING', 'KINDWORK', 'TWDAYS',
-                    'HH_BIN', 'FRMLA_YN', 'AGE_BIN', 'RHISPANIC', 'RRACE','MS', 'GENID_DESCRIBE']
+                    'TENURE', 'LIVQTRRV', 'RENT_BIN', 'EEDUC', 'INCOME', 'INCOME_PER',
+                    'ANYWORK', 'SETTING', 'KINDWORK', 'TWDAYS', 'SCHOOLENROLL',
+                    'HH_BIN', 'AGE_BIN', 'RHISPANIC', 'RRACE','MS', 'GENID_DESCRIBE']
 factor_values = [factor for factor in relevant_factors if data_dict.loc[factor, 'Type'] in ['Ordinal', 'Nominal']]
 factor_names = [data_dict.loc[factor, 'Name'] for factor in factor_values]
 n_factors = len(factor_values)
@@ -72,13 +72,14 @@ control_duration = html.Div(
 header_content = [
                     html.H1("🏠 Household displacement in recent US disasters"),
                     html.P("""
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 
-                        enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-                        nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
-                        nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-                        sunt in culpa qui officia deserunt mollit anim id est laborum.
+                            This dashboard explores trends between various factors and both property damage 
+                            and displacement duration following recent disasters in the United States. While  
+                            housing damage has long been considered a driver of household displacement, more 
+                            recent research has highlighted the influence of additional factors such as housing 
+                            tenure, place attachment, income level, social capital, and utility disruption. These 
+                            charts help visualize the degree to which some of those factors contribute to more 
+                            significant property damage and displacement duration. Note that the percentages shown 
+                            in each chart are calculated after applying household weights within the survey.
                         """),
                     html.Em(["Data from the ",
                              html.A("United States Household Pulse Survey",
