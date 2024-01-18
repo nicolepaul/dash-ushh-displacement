@@ -54,22 +54,25 @@ body {
     background-color: #FFFFFF;
 }
 
-.Select-control {
-    width: 256px;
+
+.Select-control .Select-value .Select-value-label {
+    width: 300px;
     height: 48px;
+    display: flex;
+    padding: 0;
 }
 
-.Select--single>.Select-control .Select-value,
+/* .Select--single>.Select-control .Select-value,
 .Select-placeholder {
     line-height: 48px;
 }
 
 .Select--multi .Select-value-label {
-    line-height: 32px;
-}
+    line-height: 48px;
+} */
 
 .menu-title {
     margin-bottom: 6px;
     font-weight: bold;
-    color: #079A82;
+    color: #222222;
 }

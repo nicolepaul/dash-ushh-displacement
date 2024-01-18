@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 
 from data import get_data
 from util.data import create_crosstab
-from util.plot import get_stacked_bar_traces
+from util.plot import get_stacked_bar_traces, get_choropleth_figure
 
 # Retrieve data and initial inputs
 data, data_dict = get_data()
@@ -25,10 +25,46 @@ factor_values = [factor for factor in relevant_factors if data_dict.loc[factor, 
 factor_names = [data_dict.loc[factor, 'Name'] for factor in factor_values]
 n_factors = len(factor_values)
 
+# Arrange geographic inputs and default factor
+geo_factors = {
+    'DISP_ANY': 'were displaced for any duration',
+    'DISP_LT1MO': 'were displaced shorter than 1 month',
+    'DISP_GT1MO': 'were displaced longer than 1 month',
+    'DISP_NORETURN': 'never returned after being displaced',
+}
+geo_factor = 'DISP_GT1MO'
+geo = pd.read_csv('st_duration.csv')
+
 # Initialize app
 app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
 load_figure_template('FLATLY')
 app.title = "Household displacement in recent US disasters"
+
+# Header content
+header_content = [
+                    html.H1("🏠 Household displacement in recent US disasters"),
+                    html.P("""
+                            This dashboard explores trends between various factors and both property damage 
+                            and displacement duration following recent disasters in the United States. While  
+                            housing damage has long been considered a driver of household displacement, more 
+                            recent research has highlighted the influence of additional factors such as housing 
+                            tenure, place attachment, income level, social capital, and utility disruption. These 
+                            charts help visualize the degree to which some of those factors contribute to more 
+                            significant property damage and displacement duration. Note that the percentages shown 
+                            in each chart are calculated after applying household weights within the survey.
+                        """),
+                    html.Em([
+                             "Dashboard created by ",
+                             html.A("Nicole Paul",
+                                    href="https://nicolepaul.io"
+                                    ),
+                             " using data from the ",
+                             html.A("United States Household Pulse Survey",
+                                    href="https://www.census.gov/programs-surveys/household-pulse-survey.html"
+                                    ),
+                             " (Last accessed: December 2023)"
+                            ])
+               ]
 
 # Create controls
 control_damage = html.Div(
@@ -66,38 +102,38 @@ control_duration = html.Div(
                     clearable=False,
                     searchable=True,
                 ),
-            ]
+            ],
 )
 
-# Header content
-header_content = [
-                    html.H1("🏠 Household displacement in recent US disasters"),
-                    html.P("""
-                            This dashboard explores trends between various factors and both property damage 
-                            and displacement duration following recent disasters in the United States. While  
-                            housing damage has long been considered a driver of household displacement, more 
-                            recent research has highlighted the influence of additional factors such as housing 
-                            tenure, place attachment, income level, social capital, and utility disruption. These 
-                            charts help visualize the degree to which some of those factors contribute to more 
-                            significant property damage and displacement duration. Note that the percentages shown 
-                            in each chart are calculated after applying household weights within the survey.
-                        """),
-                    html.Em([
-                             "Dashboard created by ",
-                             html.A("Nicole Paul",
-                                    href="https://nicolepaul.io"
-                                    ),
-                             " using data from the ",
-                             html.A("United States Household Pulse Survey",
-                                    href="https://www.census.gov/programs-surveys/household-pulse-survey.html"
-                                    ),
-                             " (Last accessed: December 2023)"
-                            ])
-               ]
+control_geo = html.Div(
+    [
+        html.H4("Investigate disaster displacement trends by state"),
+        html.P([
+                "The proportion of households that",
+                dcc.Dropdown(
+                            id="geo-duration-selector",
+                            options=[
+                                    {
+                                        "label": geo_factors[key],
+                                        "value": key,
+                                    }
+                                    for key in geo_factors
+                                    ],
+                            value = geo_factor,
+                            clearable = False,
+                            searchable = False,
+                            style = {'width': '310px', 'padding-left': '5px', 'padding-right': '15px'}
+                        ),
+              ],
+              style = {"display": "flex", "flexWrap": "wrap", "line-height": "36px"}
+              )
+    ]
+)
 
 # Create graphs
 graph_damage = dbc.Card([control_damage, dcc.Graph(id="factor-damage-graph")], body=True)
 graph_duration = dbc.Card([control_duration, dcc.Graph(id="factor-duration-graph")], body=True)
+graph_geo = dbc.Card([control_geo, dcc.Graph(id="geo-duration-graph")], body=True)
 
 # Create layout
 app.layout = dbc.Container(
@@ -113,6 +149,9 @@ app.layout = dbc.Container(
             ],
             align="center",
         ),
+        dbc.Row(
+            dbc.Col(graph_geo)
+        )
     ],
     fluid=True,
 )
@@ -140,6 +179,14 @@ def plot_duration(factor):
             xaxis_title=crosst.index.name, yaxis_title='Proportion of households')
     return go.Figure(data=traces, layout=layout)
 
+@app.callback(
+    Output("geo-duration-graph", "figure"), [Input("geo-duration-selector", "value")]
+)
+def plot_geo(factor):
+
+    fig = get_choropleth_figure(geo, factor, geo_factors[factor])
+
+    return fig
 
 if __name__ == "__main__":
-    app.run_server(debug=False)
+    app.run_server(debug=True)
