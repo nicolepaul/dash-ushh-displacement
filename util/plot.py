@@ -1,4 +1,5 @@
 import plotly.graph_objs as go
+import textwrap
 
 
 # Utility function to get stacked bars
@@ -16,6 +17,10 @@ def get_choropleth_figure(df, factor, factor_str):
     # Arrange hover text
     df['hover'] = df.apply(lambda x: f"<b>{x.State}:</b> {x[factor]:.1%}", axis=1)
 
+    # Handle legend title
+    split_text = textwrap.wrap(factor_str, 
+                            width=30)
+
     # TODO: Discretize colors
 
     # Create main figure
@@ -27,7 +32,7 @@ def get_choropleth_figure(df, factor, factor_str):
         colorscale = 'YlGn',
         hoverinfo = "text",
         text = df['hover'],
-        colorbar_title = f"The proportion of households that<br>{factor_str}<br>in recent US disasters (%)",
+        colorbar_title = '<br>'.join(split_text),
         colorbar_ticksuffix = '%',
     ))
 
