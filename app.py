@@ -2,10 +2,8 @@ import dash
 import pandas as pd
 import plotly.graph_objs as go
 from dash import Input, Output, dcc, html
-
 from dash_bootstrap_templates import load_figure_template
 import dash_bootstrap_components as dbc
-
 
 from data import get_data
 from util.data import create_crosstab
@@ -14,12 +12,15 @@ from util.plot import get_stacked_bar_traces
 # Retrieve data and initial inputs
 data, data_dict = get_data()
 damage_factor, duration_factor = "ND_DAMAGE", "ND_HOWLONG"
-relevant_factors = ['ND_DAMAGE', 'ND_HOWLONG', 'HAZARD_TYPE', 'ND_UNSANITARY', 'ND_FDSHRTAGE',
-                    'ND_WATER', 'ND_ELCTRC', 'DOWN', 'WORRY', 
+relevant_factors = ['ND_DAMAGE', 'ND_HOWLONG', 
+                    'ND_UNSANITARY', 'ND_FDSHRTAGE', 'ND_WATER', 'ND_ELCTRC',
+                    'HAZARD_TYPE', 'REGION',
+                    'TENURE', 'LIVQTRRV', 'DWELLTYPE', 'RENT_BIN', 'EEDUC', 'INCOME', 'INCOME_PER',
+                    'HH_BIN', 'AGE_BIN', 'RHISPANIC', 'RRACE','MS', 'GENID_DESCRIBE',
+                    'DOWN', 'WORRY', 'INTEREST', 'ANXIOUS',
                     'MOBILITY', 'REMEMBERING', 'SELFCARE', 'UNDERSTAND',
-                    'TENURE', 'LIVQTRRV', 'RENT_BIN', 'EEDUC', 'INCOME', 'INCOME_PER',
                     'ANYWORK', 'SETTING', 'KINDWORK', 'TWDAYS', 'SCHOOLENROLL',
-                    'HH_BIN', 'AGE_BIN', 'RHISPANIC', 'RRACE','MS', 'GENID_DESCRIBE']
+                    ]
 factor_values = [factor for factor in relevant_factors if data_dict.loc[factor, 'Type'] in ['Ordinal', 'Nominal']]
 factor_names = [data_dict.loc[factor, 'Name'] for factor in factor_values]
 n_factors = len(factor_values)
@@ -37,7 +38,7 @@ control_damage = html.Div(
                     id="factor-damage-selector",
                     options=[
                         {
-                            "label":  name,
+                            "label": name,
                             "value": value,
                         }
                         for name, value in zip(factor_names, factor_values) if value != damage_factor
@@ -56,7 +57,7 @@ control_duration = html.Div(
                     id="factor-duration-selector",
                     options=[
                         {
-                            "label":  name,
+                            "label": name,
                             "value": value,
                         }
                         for name, value in zip(factor_names, factor_values) if value != duration_factor
@@ -81,10 +82,17 @@ header_content = [
                             significant property damage and displacement duration. Note that the percentages shown 
                             in each chart are calculated after applying household weights within the survey.
                         """),
-                    html.Em(["Data from the ",
+                    html.Em([
+                             "Dashboard created by ",
+                             html.A("Nicole Paul",
+                                    href="https://nicolepaul.io"
+                                    ),
+                             " using data from the ",
                              html.A("United States Household Pulse Survey",
                                     href="https://www.census.gov/programs-surveys/household-pulse-survey.html"
-                                    )])
+                                    ),
+                             " (Last accessed: December 2023)"
+                            ])
                ]
 
 # Create graphs
@@ -118,7 +126,7 @@ def plot_damage(factor):
     crosst = create_crosstab(data, data_dict, damage_factor, factor, samples=True)
     traces = get_stacked_bar_traces(crosst)
     layout = go.Layout(barmode='stack', legend_title=crosst.columns.name, colorway=damage_colors,
-            xaxis_title=crosst.index.name, yaxis_title='Proportion of respondents')
+            xaxis_title=crosst.index.name, yaxis_title='Proportion of households')
     return go.Figure(data=traces, layout=layout)
 
 @app.callback(
@@ -129,9 +137,9 @@ def plot_duration(factor):
     crosst = create_crosstab(data, data_dict, duration_factor, factor, samples=True)
     traces = get_stacked_bar_traces(crosst)
     layout = go.Layout(barmode='stack', legend_title=crosst.columns.name, colorway=damage_colors,
-            xaxis_title=crosst.index.name, yaxis_title='Proportion of respondents')
+            xaxis_title=crosst.index.name, yaxis_title='Proportion of households')
     return go.Figure(data=traces, layout=layout)
 
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)

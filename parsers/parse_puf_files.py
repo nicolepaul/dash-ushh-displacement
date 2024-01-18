@@ -75,6 +75,7 @@ def custom_puf_handling(puf, data_dict):
     # Create columns for retun, protracted displacement
     puf, data_dict = append_returned_column(puf, data_dict)
     puf, data_dict = append_protracted_column(puf, data_dict)
+    puf, data_dict = append_recovery_column(puf, data_dict)
     puf, data_dict = append_phase_column(puf, data_dict)
     puf, data_dict = append_phase_return_column(puf, data_dict)
     # Create columns for return time windows
@@ -83,7 +84,6 @@ def custom_puf_handling(puf, data_dict):
     # Determine new columns
     out_cols = puf.columns.tolist()
     new_cols = [col for col in out_cols if col not in in_cols]
-    print(f"Added new columns: {new_cols}")
 
     return puf, data_dict
 
@@ -385,6 +385,26 @@ def append_protracted_column(df, data_dict):
     return df, data_dict
 
 
+def append_recovery_column(df, data_dict):
+    # Create new variable for return from ND_HOWLONG
+    # 1) Less than a week
+    # 2) Less than a month
+    # 3) One to six months
+    # 4) More than six months
+    # 5) Never returned
+    # RECOVERY --> 1: Displacement > 1 month; 0: Displacement < 1 month or no return
+    new_col = "RECOVERY"
+    map_dict = {1: 0, 2: 0, 3: 1, 4: 1, 5: 0}
+    df[new_col] = df["ND_HOWLONG"].replace(map_dict)
+    if new_col not in data_dict.index:
+        new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
+        new_row.loc[new_col]['Type'] = 'Nominal'
+        new_row.loc[new_col]['Name'] = 'Recovery phase displacement'
+        new_row.loc[new_col]['Conversion'] = {0: 'Recovery phase', 1: 'Emergency phase or no return'}
+        data_dict = pd.concat([data_dict, new_row], axis=0)
+    return df, data_dict
+
+
 def append_phase_column(df, data_dict):
     # Create new variable for emergency displacement from ND_HOWLONG
     # 1) Less than a week
@@ -392,7 +412,7 @@ def append_phase_column(df, data_dict):
     # 3) One to six months
     # 4) More than six months
     # 5) Never returned
-    # PROTRACTED --> 0: Emergency phase displacement; 1: Recovery phase displacement
+    # PROTRACTED --> 0: Emergency phase displacement; 1: Recovery phase or no return
     new_col = "PHASE"
     map_dict = {1: 0, 2: 0, 3: 1, 4: 1, 5: 1}
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
@@ -400,7 +420,7 @@ def append_phase_column(df, data_dict):
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
         new_row.loc[new_col]['Type'] = 'Nominal'
         new_row.loc[new_col]['Name'] = 'Displacement phase'
-        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase'}
+        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase or no return'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 

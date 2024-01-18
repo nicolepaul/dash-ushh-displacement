@@ -34,12 +34,24 @@ def parse_data_values(row):
     return r_dict
 
 
-def parse_data_dictionary(file_path):
+def parse_data_dictionary(file_path, drop_bad=True):
     # Read data dictionary
     data_dict = pd.read_excel(file_path)
 
     # Create conversion dictionaries
     data_dict["Conversion"] = data_dict.Values.apply(parse_data_values)
+
+    # Print that 'bad' values are being dropped
+    if drop_bad:
+        bad_vals = [-88, -99]
+        conv_dicts = data_dict["Conversion"].tolist()
+        for conv_dict in conv_dicts:
+            for bad_val in bad_vals:
+                try:
+                    del conv_dict[bad_val]
+                except KeyError:
+                    pass
+        data_dict["Conversion"] = conv_dicts
 
     # Return result
     return data_dict
