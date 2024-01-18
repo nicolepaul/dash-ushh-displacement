@@ -28,8 +28,8 @@ n_factors = len(factor_values)
 # Arrange geographic inputs and default factor
 geo_prefix = ""
 geo_factors = {
-    'DISP_ANY': 'The proportion of households that faced any disaster displacement',
-    'DISP_LT1MO': 'The proportion of disaster-displaced households that returned within 1 month',
+    'DISP_ANY': 'The proportion of households that experienced any disaster displacement',
+    'DISP_LT1MO': 'The proportion of disaster-displaced households that returned in less than 1 month',
     'DISP_GT1MO': 'The proportion of disaster-displaced households that took longer than 1 month to return',
     'DISP_NORETURN': 'The proportion of disaster-displaced households that never returned',
 }
