@@ -63,7 +63,7 @@ header_content = [
                              html.A("United States Household Pulse Survey",
                                     href="https://www.census.gov/programs-surveys/household-pulse-survey.html"
                                     ),
-                             " (Last accessed: December 2023)"
+                             " (Last accessed: August 2024)"
                             ])
                ]
 
