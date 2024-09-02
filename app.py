@@ -31,7 +31,7 @@ geo_factors = {
     'DISP_ANY': 'The proportion of households that experienced any disaster displacement',
     'DISP_LT1MO': 'The proportion of disaster-displaced households that returned in less than 1 month',
     'DISP_GT1MO': 'The proportion of disaster-displaced households that took longer than 1 month to return',
-    'DISP_NORETURN': 'The proportion of disaster-displaced households that never returned',
+    'DISP_NORETURN': 'The proportion of disaster-displaced households that had not returned',
 }
 geo_factor = 'DISP_GT1MO'
 geo = pd.read_csv('st_duration.csv')

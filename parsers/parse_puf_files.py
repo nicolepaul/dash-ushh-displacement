@@ -440,7 +440,7 @@ def append_phase_return_column(df, data_dict):
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
         new_row.loc[new_col]['Type'] = 'Nominal'
         new_row.loc[new_col]['Name'] = 'Displacement phase'
-        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase', 2: 'Never returned'}
+        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase', 2: 'Not returned'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
