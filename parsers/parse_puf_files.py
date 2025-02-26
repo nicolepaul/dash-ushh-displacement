@@ -84,6 +84,7 @@ def custom_puf_handling(puf, data_dict):
     # Determine new columns
     out_cols = puf.columns.tolist()
     new_cols = [col for col in out_cols if col not in in_cols]
+    print(f"Added new columns: {new_cols}")
 
     return puf, data_dict
 
@@ -124,9 +125,9 @@ def get_hazard_type(df, data_dict):
     # Update data dictionary
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = "Hazard type"
-        new_row.loc[new_col]['Conversion'] = nd_conv
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = "Hazard type"
+        new_row.at[new_col, 'Conversion'] = nd_conv
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -176,9 +177,9 @@ def normalize_income(df, data_dict):
         df.loc[idx, new_col] = i+1
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Ordinal'
-        new_row.loc[new_col]['Name'] = 'Income per household member'
-        new_row.loc[new_col]['Conversion'] = rebin_conv
+        new_row.loc[new_col, 'Type'] = 'Ordinal'
+        new_row.loc[new_col, 'Name'] = 'Income per household member'
+        new_row.at[new_col, 'Conversion'] = rebin_conv
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -199,9 +200,9 @@ def rebin_race(df, data_dict):
     df[new_col] = df[ref_col].replace(rebin_map)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = rebin_name
-        new_row.loc[new_col]['Conversion'] = rebin_conversion
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = rebin_name
+        new_row.at[new_col, 'Conversion'] = rebin_conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -223,9 +224,9 @@ def rebin_school_enroll(df, data_dict):
     df.loc[(idx_pub)&(idx_prv), new_col] = 4
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = "School enrollment"
-        new_row.loc[new_col]['Conversion'] = {1: 'None',
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = "School enrollment"
+        new_row.at[new_col, 'Conversion'] = {1: 'None',
                                               2: 'Public school',
                                               3: 'Private school',
                                               4: 'Public and private'}
@@ -250,9 +251,9 @@ def rebin_tenure_column(df, data_dict):
     df[new_col] = df[ref_col].replace(rebin_map)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = rebin_name
-        new_row.loc[new_col]['Conversion'] = rebin_conversion
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = rebin_name
+        new_row.at[new_col, 'Conversion'] = rebin_conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -278,9 +279,9 @@ def rebin_livqtr_column(df, data_dict):
     df[new_col] = df[ref_col].replace(rebin_map)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = rebin_name
-        new_row.loc[new_col]['Conversion'] = rebin_conversion
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = rebin_name
+        new_row.at[new_col, 'Conversion'] = rebin_conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -315,9 +316,9 @@ def append_livqtr_columns(df, data_dict):
         df[dummy_col] = df[ref_col].replace(dummy_map[dummy_col])
         if dummy_col not in data_dict.index:
             new_row = pd.DataFrame(index=[dummy_col], columns=data_dict.columns)
-            new_row.loc[dummy_col]['Type'] = 'Nominal'
-            new_row.loc[dummy_col]['Name'] = dummy_name[dummy_col]
-            new_row.loc[dummy_col]['Conversion'] = {0: 'No', 1: 'Yes'}
+            new_row.loc[dummy_col, 'Type'] = 'Nominal'
+            new_row.loc[dummy_col, 'Name'] = dummy_name[dummy_col]
+            new_row.at[dummy_col, 'Conversion'] = {0: 'No', 1: 'Yes'}
             data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -338,9 +339,9 @@ def append_return_window_columns(df, data_dict):
         if new_col not in data_dict.index:
             window = data_dict.loc['ND_HOWLONG', 'Conversion'][i]
             new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-            new_row.loc[new_col]['Type'] = 'Nominal'
-            new_row.loc[new_col]['Name'] = f'Returned within {window.lower()}'
-            new_row.loc[new_col]['Conversion'] = {0: 'Did not', 1: f'Returned within {window.lower()}'}
+            new_row.loc[new_col, 'Type'] = 'Nominal'
+            new_row.loc[new_col, 'Name'] = f'Returned within {window.lower()}'
+            new_row.at[new_col, 'Conversion'] = {0: 'Did not', 1: f'Returned within {window.lower()}'}
             data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -358,9 +359,9 @@ def append_returned_column(df, data_dict):
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = 'Returned'
-        new_row.loc[new_col]['Conversion'] = {0: 'Returned', 1: 'Did not return'}
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = 'Returned'
+        new_row.at[new_col, 'Conversion'] = {0: 'Returned', 1: 'Did not return'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -378,9 +379,9 @@ def append_protracted_column(df, data_dict):
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = 'Protracted displacement'
-        new_row.loc[new_col]['Conversion'] = {0: 'Not protracted', 1: 'Protracted'}
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = 'Protracted displacement'
+        new_row.at[new_col, 'Conversion'] = {0: 'Not protracted', 1: 'Protracted'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -398,9 +399,9 @@ def append_recovery_column(df, data_dict):
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = 'Recovery phase displacement'
-        new_row.loc[new_col]['Conversion'] = {0: 'Recovery phase', 1: 'Emergency phase or no return'}
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = 'Recovery phase displacement'
+        new_row.at[new_col, 'Conversion'] = {0: 'Recovery phase', 1: 'Emergency phase or no return'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -418,9 +419,9 @@ def append_phase_column(df, data_dict):
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = 'Displacement phase'
-        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase or no return'}
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = 'Displacement phase'
+        new_row.at[new_col, 'Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase or no return'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -438,9 +439,9 @@ def append_phase_return_column(df, data_dict):
     df[new_col] = df["ND_HOWLONG"].replace(map_dict)
     if new_col not in data_dict.index:
         new_row = pd.DataFrame(index=[new_col], columns=data_dict.columns)
-        new_row.loc[new_col]['Type'] = 'Nominal'
-        new_row.loc[new_col]['Name'] = 'Displacement phase'
-        new_row.loc[new_col]['Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase', 2: 'Not returned'}
+        new_row.loc[new_col, 'Type'] = 'Nominal'
+        new_row.loc[new_col, 'Name'] = 'Displacement phase'
+        new_row.at[new_col, 'Conversion'] = {0: 'Emergency phase', 1: 'Recovery phase', 2: 'Not returned'}
         data_dict = pd.concat([data_dict, new_row], axis=0)
     return df, data_dict
 
@@ -468,12 +469,12 @@ def convert_birth_year_to_age_bin(df, data_dict):
     # Adjust data dictionary
     if age_col not in data_dict.index:
         new_row = pd.DataFrame(index=[age_col], columns=data_dict.columns)
-        new_row.loc[age_col]['Type'] = 'Ordinal'
-        new_row.loc[age_col]['Name'] = 'Age'
-        new_row.loc[age_col]['Conversion'] = conversion
+        new_row.loc[age_col, 'Type'] = 'Ordinal'
+        new_row.loc[age_col, 'Name'] = 'Age'
+        new_row.at[age_col, 'Conversion'] = conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     else:
-        data_dict.loc[age_col]['Conversion'] = conversion
+        data_dict.at[age_col, 'Conversion'] = conversion
     # Return result
     return df, data_dict
 
@@ -500,12 +501,12 @@ def convert_hh_size_to_bin(df, data_dict):
     # Adjust data dictionary
     if hh_bin_col not in data_dict.index:
         new_row = pd.DataFrame(index=[hh_bin_col], columns=data_dict.columns)
-        new_row.loc[hh_bin_col]['Type'] = 'Ordinal'
-        new_row.loc[hh_bin_col]['Name'] = 'Household size'
-        new_row.loc[hh_bin_col]['Conversion'] = conversion
+        new_row.loc[hh_bin_col, 'Type'] = 'Ordinal'
+        new_row.loc[hh_bin_col, 'Name'] = 'Household size'
+        new_row.at[hh_bin_col, 'Conversion'] = conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     else:
-        data_dict.loc[hh_bin_col]['Conversion'] = conversion
+        data_dict.at[hh_bin_col]['Conversion'] = conversion
     # Return result
     return df, data_dict
 
@@ -531,9 +532,9 @@ def convert_rent_to_bin(df, data_dict):
     # Adjust data dictionary
     if rent_bin_col not in data_dict.index:
         new_row = pd.DataFrame(index=[rent_bin_col], columns=data_dict.columns)
-        new_row.loc[rent_bin_col]['Type'] = 'Ordinal'
-        new_row.loc[rent_bin_col]['Name'] = 'Rent (per month)'
-        new_row.loc[rent_bin_col]['Conversion'] = conversion
+        new_row.loc[rent_bin_col, 'Type'] = 'Ordinal'
+        new_row.loc[rent_bin_col, 'Name'] = 'Rent (per month)'
+        new_row.at[rent_bin_col, 'Conversion'] = conversion
         data_dict = pd.concat([data_dict, new_row], axis=0)
     else:
         data_dict.loc[rent_bin_col]['Conversion'] = conversion

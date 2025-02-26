@@ -50,7 +50,7 @@ header_content = [
                             housing damage has long been considered a driver of household displacement, more 
                             recent research has highlighted the influence of additional factors such as housing 
                             tenure, place attachment, income level, social capital, and utility disruption. These 
-                            charts help visualize the degree to which some of those factors contribute to more 
+                            charts help visualize the degree to which some of those factors are associated with more 
                             significant property damage and displacement duration. Note that the percentages shown 
                             in each chart are calculated after applying household weights within the survey.
                         """),
@@ -66,6 +66,17 @@ header_content = [
                              " (Last accessed: August 2024)"
                             ])
                ]
+
+# Footer content
+footer_content = [
+                    html.Em("For more information, please refer to the open access article:"),
+                    html.P([
+                        "Paul, N., Galasso, C., Baker, J., & Silva, V. (2025). A predictive model for household displacement duration after disasters. ",
+                        html.Em("Risk Analysis"),
+                        ", 1–29. ",
+                        html.A("https://doi.org/10.1111/risa.17710", href="https://doi.org/10.1111/risa.17710"),
+                        ])
+                ]
 
 # Create controls
 control_damage = html.Div(
@@ -145,8 +156,11 @@ app.layout = dbc.Container(
             align="center",
         ),
         dbc.Row(
-            dbc.Col(graph_geo)
-        )
+            dbc.Col(graph_geo),
+        ),
+        dbc.Row([
+            dbc.Card(footer_content, body=True)
+        ]),
     ],
     fluid=True,
 )
