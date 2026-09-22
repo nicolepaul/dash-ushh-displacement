@@ -1,3 +1,5 @@
+import os
+
 import dash
 import pandas as pd
 import plotly.graph_objs as go
@@ -38,6 +40,7 @@ geo = pd.read_csv('st_duration.csv')
 
 # Initialize app
 app = dash.Dash(external_stylesheets=[dbc.themes.FLATLY])
+server = app.server
 load_figure_template('FLATLY')
 app.title = "Household displacement in recent US disasters"
 
@@ -198,4 +201,8 @@ def plot_geo(factor):
     return fig
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(
+        debug=os.environ.get("DASH_DEBUG") == "1",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8050)),
+    )
