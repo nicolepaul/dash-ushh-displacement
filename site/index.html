@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Household displacement in recent US disasters</title>
+<meta name="description" content="Explore trends between property damage, displacement duration, and other household factors following recent disasters in the United States.">
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/flatly/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.33.0/plotly.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="card" style="margin:24px 12px;">
+      <div class="card-body">
+        <h1>🏠 Household displacement in recent US disasters</h1>
+        <p>
+          This dashboard explores trends between various factors and both property damage
+          and displacement duration following recent disasters in the United States. While
+          housing damage has long been considered a driver of household displacement, more
+          recent research has highlighted the influence of additional factors such as housing
+          tenure, place attachment, income level, social capital, and utility disruption. These
+          charts help visualize the degree to which some of those factors are associated with more
+          significant property damage and displacement duration. Note that the percentages shown
+          in each chart are calculated after applying household weights within the survey.
+        </p>
+        <em>
+          Dashboard created by <a href="https://nicolepaul.io">Nicole Paul</a>
+          using data from the
+          <a href="https://www.census.gov/programs-surveys/household-pulse-survey.html">United States Household Pulse Survey</a>
+          (Last accessed: August 2024)
+        </em>
+      </div>
+    </div>
+  </div>
+
+  <div class="row align-items-center">
+    <div class="col-md-6">
+      <div class="card" style="margin:0 12px 24px 12px;">
+        <div class="card-body">
+          <h4>Investigate damage trends with</h4>
+          <select id="factor-damage-selector" class="form-select"></select>
+          <div id="factor-damage-graph"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card" style="margin:0 12px 24px 12px;">
+        <div class="card-body">
+          <h4>Investigate duration trends with</h4>
+          <select id="factor-duration-selector" class="form-select"></select>
+          <div id="factor-duration-graph"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="card" style="margin:0 12px 24px 12px;">
+        <div class="card-body">
+          <h4>Investigate disaster displacement trends by state</h4>
+          <select id="geo-duration-selector" class="form-select"></select>
+          <div id="geo-duration-graph"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="card" style="margin:0 12px 24px 12px;">
+      <div class="card-body">
+        <em>For more information, please refer to the open access article:</em>
+        <p>
+          Paul, N., Galasso, C., Baker, J., &amp; Silva, V. (2025). A predictive model for household displacement duration after disasters.
+          <em>Risk Analysis</em>, 1&ndash;29.
+          <a href="https://doi.org/10.1111/risa.17710">https://doi.org/10.1111/risa.17710</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="main.js"></script>
+</body>
+</html>
